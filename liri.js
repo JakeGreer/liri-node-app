@@ -32,8 +32,6 @@ function twitter() {
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET 
     });
     
-    console.log(client);
-    
     var params = {
 
         screen_name: user, 
@@ -41,11 +39,12 @@ function twitter() {
     };
 
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
-
+        //contains tweet number value;
         var counter = 1;
 
         if (error) {
-			return console.log(error);
+            console.log(error);
+            return;
         }
 
         console.log("\n***************************************************");
@@ -54,10 +53,10 @@ function twitter() {
         console.log("***************************************************");
         console.log("***************************************************");
         
-		for (var i = tweets.length - 1; i >= 0; i--) {
+		for (var i = 0; i < tweets.length; i++) {
 			console.log("\nTweet Number: " + counter++);
-			console.log("___________________");
-			console.log("@" + tweets[i].user.screen_name);
+			console.log("__________________\n");
+			console.log("@" + tweets[i].user.screen_name + "\n");
 			console.log(tweets[i].text);
             console.log("\n***************************************************\n");
 		}
@@ -70,24 +69,22 @@ function spotify() {
 
     var title = "";
 
+    var Spotify = require('node-spotify-api');
+    
+    var spotify = new Spotify({
+        id: process.env.SPOTIFY_ID,
+        secret: process.env.SPOTIFY_SECRET
+    });
+
     if(nodeArgs[3]) {
+        //if parameter is given store it in title
         title = nodeArgs[3];
-
-
-        // Capture all the words in the address (again ignoring the first two Node arguments)
+        // Capture all the words in the title (again ignoring the first three Node arguments)
         for (var i = 3; i < nodeArgs.length; i++) {
             
             // Build a string with the title.
-            title = title + " " + nodeArgs[i];
-            
+            title = title + " " + nodeArgs[i];   
         }
-
-        var Spotify = require('node-spotify-api');
-        
-        var spotify = new Spotify({
-            id: process.env.SPOTIFY_ID,
-            secret: process.env.SPOTIFY_SECRET
-        });
             
         spotify.search({ type: 'track', query: title }, function(err, data) {
             if (err) {
@@ -107,17 +104,10 @@ function spotify() {
         });
     }
     else {
-        var Spotify = require('node-spotify-api');
-        
-        var spotify = new Spotify({
-            id: process.env.SPOTIFY_ID,
-            secret: process.env.SPOTIFY_SECRET
-        });
         
        spotify
          .request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
          .then(function(data) {
-           console.log(data);
            console.log("\n***************************************************");
             console.log("***************************************************");
             console.log("***************** SPOTIFY RESULTS *****************");
@@ -147,7 +137,7 @@ function IMDB() {
     var movieName = "Mr. Nobody";
 
     if(nodeArgs[3]) {
-        
+
         movieName = nodeArgs[3];
 
     }
@@ -157,7 +147,7 @@ function IMDB() {
     for(var i = 3; i < process.argv.length; i++) {
     
         if(i > 3 && i < process.argv.length) {
-    
+            //adds an addition sign because thats how imdb wants multiple word movies formatted (i.e. "Die+Hard")
             movieName += "+" + process.argv[i];
         }
         else {
@@ -165,7 +155,6 @@ function IMDB() {
         }
     
     }
-    // ...
     
     
     // Then run a request to the OMDB API with the movie specified
@@ -177,10 +166,10 @@ function IMDB() {
     
     
     // Then create a request to the queryUrl
-    // ...
     request(queryUrl, function(error, response, body) {
         if(!error && response.statusCode === 200) {
 
+            
             console.log("\n***************************************************");
             console.log("***************************************************");
             console.log("****************** OMDB RESULTS *******************");
@@ -195,6 +184,7 @@ function IMDB() {
             console.log("Actors: " + JSON.parse(body).Actors);
             console.log("\n***************************************************\n");
         }
+
     });
 }
 
