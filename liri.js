@@ -37,7 +37,7 @@ function twitter() {
     var params = {
 
         screen_name: user, 
-        count: 10
+        count: 20
     };
 
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
@@ -47,14 +47,19 @@ function twitter() {
         if (error) {
 			return console.log(error);
         }
+
+        console.log("\n***************************************************");
+        console.log("***************************************************");
+        console.log("***************** TWITTER RESULTS *****************");
+        console.log("***************************************************");
+        console.log("***************************************************");
         
 		for (var i = tweets.length - 1; i >= 0; i--) {
 			console.log("\nTweet Number: " + counter++);
-			console.log("==================================================");
+			console.log("___________________");
 			console.log("@" + tweets[i].user.screen_name);
 			console.log(tweets[i].text);
-			console.log("==================================================");
-			console.log(" ");
+            console.log("\n***************************************************\n");
 		}
 
     });
@@ -63,44 +68,74 @@ function twitter() {
 
 function spotify() {
 
-    var title = nodeArgs[3];
+    var title = "";
 
-    // Capture all the words in the address (again ignoring the first two Node arguments)
-    for (var i = 3; i < nodeArgs.length; i++) {
-        
-        // Build a string with the title.
-        title = title + " " + nodeArgs[i];
-        
-    }
+    if(nodeArgs[3]) {
+        title = nodeArgs[3];
 
-    var Spotify = require('node-spotify-api');
-    
-    var spotify = new Spotify({
-        id: process.env.SPOTIFY_ID,
-        secret: process.env.SPOTIFY_SECRET
-    });
-        
-    spotify.search({ type: 'track', query: title }, function(err, data) {
-        if (err) {
-        return console.log('Error occurred: ' + err);
+
+        // Capture all the words in the address (again ignoring the first two Node arguments)
+        for (var i = 3; i < nodeArgs.length; i++) {
+            
+            // Build a string with the title.
+            title = title + " " + nodeArgs[i];
+            
         }
 
-    console.log("\n***************************************************");
-    console.log("***************************************************");
-    console.log("***************** SPOTIFY RESULTS *****************");
-    console.log("***************************************************");
-    console.log("***************************************************");
+        var Spotify = require('node-spotify-api');
+        
+        var spotify = new Spotify({
+            id: process.env.SPOTIFY_ID,
+            secret: process.env.SPOTIFY_SECRET
+        });
+            
+        spotify.search({ type: 'track', query: title }, function(err, data) {
+            if (err) {
+            return console.log('Error occurred: ' + err);
+            }
 
-    for(var i = 0; i < 5; i++) {
-
-        console.log("\n* Song: " + data.tracks.items[i].name);
-        console.log("\n* Artist: " + data.tracks.items[i].artists[0].name); 
-        console.log("\n*URL: " + data.tracks.items[i].href); 
-        // console.log("\n* Artist: " + data.tracks.items[i].artists.name); 
-
+        console.log("\n***************************************************");
         console.log("***************************************************");
-    }  
-    });
+        console.log("***************** SPOTIFY RESULTS *****************");
+        console.log("***************************************************");
+        console.log("***************************************************");
+        console.log("\n* Song: " + data.tracks.items[0].name);
+        console.log("* Artist: " + data.tracks.items[0].artists[0].name); 
+        console.log("* Album: " + data.tracks.items[0].album.name);
+        console.log("* URL: " + data.tracks.items[0].href);  
+        console.log("\n***************************************************\n");
+        });
+    }
+    else {
+        var Spotify = require('node-spotify-api');
+        
+        var spotify = new Spotify({
+            id: process.env.SPOTIFY_ID,
+            secret: process.env.SPOTIFY_SECRET
+        });
+        
+       spotify
+         .request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
+         .then(function(data) {
+           console.log(data);
+           console.log("\n***************************************************");
+            console.log("***************************************************");
+            console.log("***************** SPOTIFY RESULTS *****************");
+            console.log("***************************************************");
+            console.log("***************************************************");
+
+            console.log("\n* Song: " + data.name);
+            console.log("* Album: " + data.album.name); 
+            console.log("* Artist: " + data.artists[0].name); 
+            console.log("* URL: " + data.href); 
+
+            console.log("\n***************************************************\n"); 
+         })
+         .catch(function(err) {
+           console.error('Error occurred: ' + err); 
+         });
+    }
+
 }
 
 
@@ -108,7 +143,14 @@ function IMDB() {
     
     var request = require("request");
     
-    var movieName = nodeArgs[3];
+
+    var movieName = "Mr. Nobody";
+
+    if(nodeArgs[3]) {
+        
+        movieName = nodeArgs[3];
+
+    }
     
     
     // Grab or assemble the movie name and store it in a variable called "movieName"
@@ -138,20 +180,26 @@ function IMDB() {
     // ...
     request(queryUrl, function(error, response, body) {
         if(!error && response.statusCode === 200) {
-            console.log("_______________________________________________________________");
-            console.log("Title: " + JSON.parse(body).Title);
+
+            console.log("\n***************************************************");
+            console.log("***************************************************");
+            console.log("****************** OMDB RESULTS *******************");
+            console.log("***************************************************");
+            console.log("***************************************************");
+            console.log("\nTitle: " + JSON.parse(body).Title);
             console.log("Release Year: " + JSON.parse(body).Year);
-            console.log("Rating: " + JSON.parse(body).Rated);
-            console.log("_______________________________________________________________");
+            console.log("Rated: " + JSON.parse(body).Rated);
+            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+            console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
             console.log("Plot: " + JSON.parse(body).Plot);
-            console.log("Director: " + JSON.parse(body).Director);
-            console.log("Writer: " + JSON.parse(body).Writer);
-            console.log("_______________________________________________________________");
-            console.log("_______________________________________________________________");
+            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("\n***************************************************\n");
         }
     });
 }
 
 function readFile() {
+
+    
     
 }
