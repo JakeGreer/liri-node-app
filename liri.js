@@ -5,7 +5,6 @@ var command = nodeArgs[2];
 //core node package for reading and writing files
 var fs= require("fs");
 
-
 function liri(command) {
 
     switch(command) {
@@ -23,6 +22,7 @@ function liri(command) {
         case "do-what-it-says":
             readFile();
             break;
+        default: console.log("\nPlease enter a valid command: \n'my-tweets', \n'spotify-this-song', \n'movie-this', \n'do-what-it-says'\n ...Followed by a desired name/title")
     }
 }
 
@@ -53,16 +53,37 @@ function twitter() {
             console.log(error);
             return;
         }
-
-        //logs the latest command and user into the log.txt file.
-        fs.appendFile("log.txt", ',my-tweets,' + tweets[0].user.screen_name, function(err) {
+        fs.readFile("log.txt", "utf8", function(err, data) {
             //if the code experiences any errors it will lof the error and return it to terminate the program. 
             if(err){
                 return console.log(err);
-            } 
-            //lets user know there was no errors and the file has been updated.         
-            console.log("log.txt was updated");
-            
+            }
+            //checks if the file is empty to make sure the file doesn't begin with a comma
+            if(data.length < 1) {
+                //logs the latest command and user into the log.txt file.
+                fs.appendFile("log.txt", 'my-tweets,' + tweets[0].user.screen_name, function(err) {
+                //if the code experiences any errors it will log the error and return it to terminate the program. 
+                if(err){
+                    return console.log(err);
+                } 
+                //lets user know there was no errors and the file has been updated.         
+                console.log("log.txt was updated");    
+            });
+            }
+            //If something is in the file then write the comma seperator.
+            else {
+                //logs the latest command and user into the log.txt file.
+                fs.appendFile("log.txt", ',my-tweets,' + tweets[0].user.screen_name, function(err) {
+                //if the code experiences any errors it will lof the error and return it to terminate the program. 
+                if(err){
+                    return console.log(err);
+                } 
+                //lets user know there was no errors and the file has been updated.         
+                console.log("log.txt was updated");
+                
+            });
+
+            }
         });
 
         //Formatting
@@ -113,15 +134,38 @@ function spotify() {
             if (err) {
                 return console.log('Error occurred: ' + err);
             }
-            //Appends the liri command and the song name to log.txt file
-            fs.appendFile("log.txt", ',spotify-this-song,' + title, function(err) {
-            //if the code experiences any errors it will lof the error and return it to terminate the program. 
-            if(err){
-                return console.log(err);
-            }
-        
-            console.log("log.txt was updated");
-        
+
+            fs.readFile("log.txt", "utf8", function(err, data) {
+                //if the code experiences any errors it will lof the error and return it to terminate the program. 
+                if(err){
+                    return console.log(err);
+                }
+                //checks if the file is empty to make sure the file doesn't begin with a comma
+                if(data.length < 1) {
+                    //logs the latest command and song into the log.txt file.
+                    fs.appendFile("log.txt", 'spotify-this-song,' + title, function(err) {
+                    //if the code experiences any errors it will log the error and return it to terminate the program. 
+                    if(err){
+                        return console.log(err);
+                    } 
+                    //lets user know there was no errors and the file has been updated.         
+                    console.log("log.txt was updated");    
+                });
+                }
+                //If something is in the file then write the comma seperator.
+                else {
+                    //logs the latest command and song into the log.txt file.
+                    fs.appendFile("log.txt", ',spotify-this-song,' + title, function(err) {
+                    //if the code experiences any errors it will lof the error and return it to terminate the program. 
+                    if(err){
+                        return console.log(err);
+                    } 
+                    //lets user know there was no errors and the file has been updated.         
+                    console.log("log.txt was updated");
+                    
+                });
+    
+                }
             });
 
             //Formatting
@@ -214,14 +258,37 @@ function IMDB() {
             var fileName = process.argv[2];
             
             
-            fs.appendFile("log.txt", ',movie-this,' + movieName, function(err) {
+            fs.readFile("log.txt", "utf8", function(err, data) {
                 //if the code experiences any errors it will lof the error and return it to terminate the program. 
                 if(err){
                     return console.log(err);
                 }
-            
-                console.log("log.txt was updated");
-            
+                //checks if the file is empty to make sure the file doesn't begin with a comma
+                if(data.length < 1) {
+                    //logs the latest command and movie into the log.txt file.
+                    fs.appendFile("log.txt", 'movie-this,' + movieName, function(err) {
+                    //if the code experiences any errors it will log the error and return it to terminate the program. 
+                    if(err){
+                        return console.log(err);
+                    } 
+                    //lets user know there was no errors and the file has been updated.         
+                    console.log("log.txt was updated");    
+                });
+                }
+                //If something is in the file then write the comma seperator.
+                else {
+                    //logs the latest command and movie into the log.txt file.
+                    fs.appendFile("log.txt", ',movie-this,' + movieName, function(err) {
+                    //if the code experiences any errors it will lof the error and return it to terminate the program. 
+                    if(err){
+                        return console.log(err);
+                    } 
+                    //lets user know there was no errors and the file has been updated.         
+                    console.log("log.txt was updated");
+                    
+                });
+    
+                }
             });
 
             //Formatting
