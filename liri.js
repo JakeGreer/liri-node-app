@@ -297,13 +297,13 @@ function IMDB() {
             console.log("****************** OMDB RESULTS *******************");
             console.log("***************************************************");
             console.log("***************************************************");
-            console.log("\nTitle: " + JSON.parse(body).Title);
-            console.log("Release Year: " + JSON.parse(body).Year);
-            console.log("Rated: " + JSON.parse(body).Rated);
-            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
-            console.log("Plot: " + JSON.parse(body).Plot);
-            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("\n* Title: " + JSON.parse(body).Title);
+            console.log("* Release Year: " + JSON.parse(body).Year);
+            console.log("* Rated: " + JSON.parse(body).Rated);
+            console.log("* IMDB Rating: " + JSON.parse(body).imdbRating);
+            console.log("* Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+            console.log("* Plot: " + JSON.parse(body).Plot);
+            console.log("* Actors: " + JSON.parse(body).Actors);
             console.log("\n***************************************************\n");
         }
 
@@ -328,20 +328,27 @@ function readFile() {
         //if the code experiences any errors it will lof the error and return it to terminate the program. 
         if(err){
             console.log(err);
+            console.log("\n************ Enter an existing text file name in the folder **************\n");
             return;
         }
         //let user know that file name can be inserted.
         if(fileName != "log.txt") {
             console.log("\nInsert log.txt as the file name after 'do-what-it-says' to have the program run your latest commands out of that file.");
         }
-        //stores each piece of data between commas in a different index of the array.
-        var dataArr = data.split(",");
-        //this sets the parameter to the last argument in the file...
-        //note: if format is not sustained within the text files (i.e. "COMMAND","PARAMETER","COMMAND","PARAMETER")then this function will break.
-        nodeArgs[3] = dataArr[(dataArr.length - 1)];
-        //this sets the command to the last used command in the file...
-        //again..this will break if format is not sustained.
-        liri(dataArr[(dataArr.length - 2)]);
+
+        if(data.length < 1) {
+            console.log("\n******** This file is empty, add to the file before trying to read from it *******\n")
+        }
+        else {
+            //stores each piece of data between commas in a different index of the array.
+            var dataArr = data.split(",");
+            //this sets the parameter to the last argument in the file...
+            //note: if format is not sustained within the text files (i.e. "COMMAND","PARAMETER","COMMAND","PARAMETER")then this function will break.
+            nodeArgs[3] = dataArr[(dataArr.length - 1)];
+            //this sets the command to the last used command in the file...
+            //again..this will break if format is not sustained.
+            liri(dataArr[(dataArr.length - 2)]);
+        }
     });
     
 }
