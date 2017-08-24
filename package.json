@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/JakeGreer/liri-node-app#readme",
   "dependencies": {
+    "inquirer": "^3.2.2",
     "node-spotify-api": "^1.0.7",
     "omdb": "^0.8.0",
     "request": "^2.81.0",

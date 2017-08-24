@@ -22,7 +22,12 @@ function liri(command) {
         case "do-what-it-says":
             readFile();
             break;
-        default: console.log("\nPlease enter a valid command: \n'my-tweets', \n'spotify-this-song', \n'movie-this', \n'do-what-it-says'\n ...Followed by a desired name/title")
+        case "clear-log":
+            clearLog();
+            break;
+        default: 
+            console.log("\nPlease enter a valid command: \n'my-tweets', \n'spotify-this-song', \n'movie-this', \n'do-what-it-says', \n'clear-log'\n, ...Followed by a desired name/title");
+            break;
     }
 }
 
@@ -73,7 +78,7 @@ function twitter() {
             //If something is in the file then write the comma seperator.
             else {
                 //logs the latest command and user into the log.txt file.
-                fs.appendFile("log.txt", ',my-tweets,' + tweets[0].user.screen_name, function(err) {
+                fs.appendFile("log.txt", '\n,my-tweets,' + tweets[0].user.screen_name, function(err) {
                 //if the code experiences any errors it will lof the error and return it to terminate the program. 
                 if(err){
                     return console.log(err);
@@ -155,7 +160,7 @@ function spotify() {
                 //If something is in the file then write the comma seperator.
                 else {
                     //logs the latest command and song into the log.txt file.
-                    fs.appendFile("log.txt", ',spotify-this-song,' + title, function(err) {
+                    fs.appendFile("log.txt", '\n,spotify-this-song,' + title, function(err) {
                     //if the code experiences any errors it will lof the error and return it to terminate the program. 
                     if(err){
                         return console.log(err);
@@ -184,7 +189,7 @@ function spotify() {
     //Else statement used if no song name is given...Defualts the results to The Sign by Ace of Base.
     else {
         //Appends the liri command and the defualt song name to the file.
-        fs.appendFile("log.txt", ',spotify-this-song, The Sign', function(err) {
+        fs.appendFile("log.txt", '\n,spotify-this-song, The Sign', function(err) {
             //if the code experiences any errors it will lof the error and return it to terminate the program. 
             if(err){
                 return console.log(err);
@@ -278,7 +283,7 @@ function IMDB() {
                 //If something is in the file then write the comma seperator.
                 else {
                     //logs the latest command and movie into the log.txt file.
-                    fs.appendFile("log.txt", ',movie-this,' + movieName, function(err) {
+                    fs.appendFile("log.txt", '\n,movie-this,' + movieName, function(err) {
                     //if the code experiences any errors it will lof the error and return it to terminate the program. 
                     if(err){
                         return console.log(err);
@@ -302,8 +307,8 @@ function IMDB() {
             console.log("* Rated: " + JSON.parse(body).Rated);
             console.log("* IMDB Rating: " + JSON.parse(body).imdbRating);
             console.log("* Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
-            console.log("* Plot: " + JSON.parse(body).Plot);
-            console.log("* Actors: " + JSON.parse(body).Actors);
+            console.log("* Plot: " + wordWrap(41, JSON.parse(body).Plot));
+            console.log("* Actors: " + wordWrap(41, JSON.parse(body).Actors));
             console.log("\n***************************************************\n");
         }
 
@@ -351,6 +356,75 @@ function readFile() {
         }
     });
     
+}
+//This function clears the log of commands gathered
+function clearLog() {
+    //requires the npm package 'inquirer'
+    var inquirer = require('inquirer');
+    inquirer
+        //promps the user if they are sure they want to delete the file.
+        .prompt({
+            type: 'confirm', 
+            message: "Are you sure you want to delete log.txt?",
+            name: "confirm",
+            default: false})
+                .then(function (inquirerResponse) {
+                    //If confirmed then rewrite the file to nothing
+                    if(inquirerResponse.confirm){
+                        fs.writeFile("log.txt", "", function(error, data) {
+                            //if the code experiences any errors it will lof the error and return it to terminate the program. 
+                            if(error){
+                                return console.log(error);
+                            }          
+                            console.log("log.txt was updated");
+                        });
+                    }
+                    //if the user rejects then log that the file was not reset and do nothing.
+                    else {
+                        console.log("File was not reset");
+                    }
+                });
+}
+
+//Wraps the text within a certain character length.
+function wordWrap(WRAP_SIZE, wordWrap)
+{
+	var format;
+	var word;
+	var line;
+
+	format = "";
+	line   = "";
+	word   = "";
+
+	for(var i = 0; i < wordWrap.length; i++)
+	{
+		if(wordWrap[i] !== " ")
+		{
+			word = word + wordWrap[i];
+		}
+		else
+		{
+			if(line.length + word.length > WRAP_SIZE)
+			{
+				format = format + line + '\n\t';
+				line = '';
+			}
+			line = line + word + " ";
+			word = '';
+		}
+	}
+
+	if(line.length + word.length < WRAP_SIZE)
+	{
+		format = format + line + word;
+	}
+	else
+	{
+		format = format + line + '\n\t' + word;
+	}
+
+	return format;
 }
 //Calls the liri function.
 liri(command);
